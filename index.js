@@ -11,9 +11,16 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(todoRoutes)
 
-mongoose.connect(process.env.DB_CONNECT, { useNewUrlParser: true }, () => {
-    console.log('db ok')
-    app.listen(3000, () => {
-        console.log('Run server')
-    })
-})
+async function start() {
+    try {
+        await mongoose.connect(process.env.DB_CONNECT, { useNewUrlParser: true }, () => {
+            console.log('db ok')
+            app.listen(3000, () => {
+                console.log('Run server')
+            })
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}
+start()

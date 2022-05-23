@@ -1,29 +1,26 @@
-import * as express from "express";
-import { routes } from "./route/route";
-const dotenv = require("dotenv");
-const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
-const todoRoutes = require("./routes/Routes");
+import express from "express";
+import * as dotenv from "dotenv";
+import mongoose, { ConnectOptions } from "mongoose";
+import { todoRoutes } from "./routes/Routes";
 
 const app = express();
 dotenv.config();
-
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(express.json());
+app.use(express.urlencoded());
 app.use(todoRoutes);
 
 async function start() {
   try {
-    await mongoose.connect(
-      process.env.DB_CONNECT,
-      { useNewUrlParser: true },
-      () => {
+    await mongoose
+      .connect(process.env.DB_CONNECT!, {
+        useNewUrlParser: true,
+      } as ConnectOptions)
+      .then((res) => {
         console.log("db ok");
         app.listen(3000, () => {
           console.log("Run server");
         });
-      }
-    );
+      });
   } catch (error) {
     console.log(error);
   }
